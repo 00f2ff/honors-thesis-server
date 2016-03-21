@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Shopping</title>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/research.css">
+</head>
+<body>
+
+	<!-- Overlay handles 6x4 key rhombus -->
+	<div id="overlay">
+		<!-- 1-6 -->
+		<div class="hover-row"></div>
+		<!-- Q-Y -->
+		<div class="hover-row"></div>
+		<!-- A-H -->
+		<div class="hover-row"></div>
+		<!-- Z-N -->
+		<div class="hover-row"></div>
+	</div>
+	<div id="search">
+		<div id="title">Shopping</div>
+		<div id="search-bar">
+			<form>
+				<input type="text" />
+			</form>
+			<div id="search-icon"></div>
+		</div>
+	</div>
+	<div id="content-wrapper">
+		<!-- link list -->
+		<div id="link_list">
+			<ul>
+				<li>Accessories</li>
+				<li>Art</li>
+				<li>Bags and Purses</li>
+				<li>Bath and Beauty</li>
+				<li>Books and Zines</li>
+				<li>Candles</li>
+			</ul>
+		</div>
+		<!-- table -->
+		<div id="table">
+		<!-- Will be different for Home / Suggestion vs Product -->
+			<!-- I found that sites like Amazon and Etsy never show more than 3 products per row, so I'm going to reverse rows and columns; Q, A and Z will access indexes 0, 1 and 2, respectively, and hovering over keys to the right will show products farther down the page -->			
+		</div>
+	</div>
+
+
+<!-- such javascript -->
+<script src="/scripts/jquery-1.11.3.min.js"></script>
+<script src="/scripts/global.js"></script>
+<script src="/scripts/table.js"></script>
+<script src="/scripts/product_table.js"></script>
+<script src="/scripts/link_list.js"></script>
+<script src="/scripts/api_key.js"></script>
+<script src="/scripts/etsy.js"></script>
+<script src="/scripts/main.js"></script>
+<script>
+$(function() {
+	var global = new Global();
+	var cell = global.cell({'data-name': 'Back'});
+	cell.css({
+		'z-index': 10, 
+		'position': 'absolute',
+		'top': 0,
+		'left': 0,
+		'width': '70px' // on Asus laptop it's a physically smaller key
+	});
+	$('#overlay').append(cell)
+})
+
+
+
+/* 
+
+DO NOT MODIFY CSS. THIS IS TAILORED FOR MY FEDORA MACHINE!!!
+
+
+*/
+
+</script>
+</body>
+</html>
