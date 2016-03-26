@@ -66,7 +66,15 @@ $(function() {
 		'left': 0,
 		'width': '70px' // on Asus laptop it's a physically smaller key
 	});
-	$('#overlay').append(cell)
+	$('#overlay').append(cell);
+
+	// LOGGING
+
+	var ids = <%- data %>;
+	global.LOG.participant_id = data.participant_id;
+	global.LOG.task_id = data.task_id;
+	global.LOG.fingers = data.fingers;
+
 })
 
 
