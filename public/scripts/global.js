@@ -45,6 +45,17 @@ function determineBrowser() {
 	if (isOpera)   return "Opera";
 }
 
+Global.prototype.addInteraction = function(key, userEvent, text) {
+	var interaction = {
+		time: Date.now(),
+		key: key,
+		userEvent: userEvent,
+		text: text
+	}
+	this.LOG.interactions.push(interaction);
+	console.log(this.LOG);
+}
+
 Global.prototype.cell = function(attributes) {
 	var cell = $('<div class="cell"></div>');
 	// assumes attributes come in prefixed with 'data-'
@@ -69,6 +80,9 @@ Global.prototype.cell = function(attributes) {
 			}
 		}).on('mouseout', function() {
 			$(this).css('background-color', 'blue');
+			// add interaction when search is not focused
+			// if (!$('#search input:focus').length) {
+				// that.addInteraction()
 			// cancel speech
 			speechSynthesis.cancel();
 		});

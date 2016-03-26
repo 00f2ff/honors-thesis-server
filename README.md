@@ -16,8 +16,7 @@ Document structure:
 		{
 			time: Date,
 			key: string,
-			hover: boolean,
-			press: boolean
+			userEvent: string,
 			text: string
 		},
 		{
