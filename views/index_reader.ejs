@@ -34,13 +34,107 @@
 
 <!-- such javascript -->
 <script src="/scripts/jquery-1.11.3.min.js"></script>
+<script>
+function Log() {
+	this.LOG = {
+		participant_id: undefined,
+		fingers: undefined,
+		participant_userAgent: navigator.userAgent, // I'll parse for OS later
+		participant_browser: determineBrowser(),
+		task_id: undefined,
+		task_start_time: Date.now(),
+		task_end_time: undefined,
+		interactions: []
+	}
+	this.pauseDelay = 0; // is subtracted from all times; increments on unpause
+	this.pauseTime = 0;
+	this.unpauseTime = 0;
+	this.paused = false;
+}
+
+function determineBrowser() {
+	// http://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser
+		// Opera 8.0+
+	var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+	    // Firefox 1.0+
+	var isFirefox = typeof InstallTrigger !== 'undefined';
+	    // At least Safari 3+: "[object HTMLElementConstructor]"
+	var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+	    // Internet Explorer 6-11
+	var isIE = /*@cc_on!@*/false || !!document.documentMode;
+	    // Edge 20+
+	var isEdge = !isIE && !!window.StyleMedia;
+	    // Chrome 1+
+	var isChrome = !!window.chrome && !!window.chrome.webstore;
+	if (isChrome)  return "Chrome";
+	if (isEdge)    return "Edge";
+	if (isIE)      return "Internet Explorer";
+	if (isSafari)  return "Safari";
+	if (isFirefox) return "Firefox";
+	if (isOpera)   return "Opera";
+}
+
+Log.prototype.logServerData = function(data) {
+	this.LOG.participant_id = data.participant_id;
+	this.LOG.task_id = data.task_id;
+	this.LOG.fingers = data.fingers;
+}
+
+Log.prototype.logInteraction = function(key, userEvent, text) {
+	// check for pause / unpause (esc)
+	if (key === 27) {
+		if (text === 'pause') {
+			this.pauseTime = Date.now();
+		} else {
+			this.unpauseTime = Date.now();
+			// increment pauseDelay
+			this.pauseDelay += (this.unpauseTime - this.pauseTime);
+		}
+	} else if (key === 39) { // check for task end (right arrow)
+		this.LOG.task_end_time = Date.now() - this.pauseDelay;
+	}
+	var interaction = {
+		time: Date.now() - this.pauseDelay,
+		key: key,
+		userEvent: userEvent,
+		text: text
+	}
+	this.LOG.interactions.push(interaction);
+	console.log(this.LOG);
+	if (key === 39) { // post to database if task ended
+		$.ajax({
+			type: 'POST',
+			url: '/save',
+			data: JSON.stringify(this.LOG),
+			contentType: "application/json",
+			dataType:'json',
+			success: function(data) {
+				console.log(data);
+				console.log('yay');
+			},
+			error: function(err) {
+				console.log(err);
+				console.log('noooo');
+			}
+		})
+	}
+}
+
+
+var log = new Log();
+console.log(log);
+
+</script>
 <script src="/scripts/reader/table.js"></script>
 <script src="/scripts/reader/product_table.js"></script>
 <script src="/scripts/api_key.js"></script>
 <script src="/scripts/reader/etsy.js"></script>
 <script src="/scripts/reader/main.js"></script>
 <script>
-
+$(function() {
+	var data = <%- JSON.stringify(data) %>;
+	log.logServerData(data);
+})
 
 /* 
 To Do:

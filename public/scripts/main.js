@@ -71,9 +71,8 @@ $('body').keydown(function(e) {
 			} else if (kc === 27) { // press escape to pause
 				log.paused = !log.paused;
 				log.logInteraction(kc, 'press', 'pause');
-			} else if (kc === 39) { // press right arrow to end task
-				log.logInteraction(kc, 'press', 'end task');
-			}
+			} 
+			// DON'T ALLOW END TASK ON SEARCH BAR (users might use arrow keys to fix typos)
 		}
 	} else {
 		if (kc === 27) { // press escape to unpause
