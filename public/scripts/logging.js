@@ -51,6 +51,6 @@ Log.prototype.logInteraction = function(key, userEvent, text) {
 }
 
 
-
-
 var log = new Log();
+console.log(log);
+
