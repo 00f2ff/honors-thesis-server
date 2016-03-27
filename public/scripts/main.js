@@ -3,11 +3,11 @@ var etsy = new Etsy();
 etsy.getRequest('listings', 'listings/trending', {'limit': 18, 'offset': 0});
 
 // Keycode arrays. Index of key corresponds with index of cell in hover-row
-var linkListKeyCodes = [49,50,51,52,53,54];
-var tableFirstColumnKeyCodes = [81,87,69,82,84,89];
+var linkListKeyCodes          = [49,50,51,52,53,54];
+var tableFirstColumnKeyCodes  = [81,87,69,82,84,89];
 var tableSecondColumnKeyCodes = [65,83,68,70,71,72];
-var tableThirdColumnKeyCodes = [90,88,67,86,66,78];
-var nextProductPageKeyCodes = [85,74,77];
+var tableThirdColumnKeyCodes  = [90,88,67,86,66,78];
+var nextProductPageKeyCodes   = [85,74,77];
 
 
 // Assigns click handler to cells (effect differs based on cell type)

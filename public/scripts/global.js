@@ -16,15 +16,11 @@ Global.prototype.cell = function(attributes) {
 	// assumes attributes come in prefixed with 'data-'
 	var that = this;
 	cell.attr(attributes)
-		.on('mouseover', function(event) {
-			console.log('mouseover');
-			console.log(event);
-			// only highlight and read cells when search is not focused
-			if (!$('#search input:focus').length) {
+		.on('mouseover', function() {
+			// only highlight and read cells when search is not focused and unpaused
+			if (!$('#search input:focus').length && !log.paused) {
 				$(this).css('background-color', 'yellow');
 				// Read out information depending on type of cell
-				// console.log(that);
-				console.log($(this))
 				if ($(this).attr('data-name')) { // LinkList
 					that.msg.text = $(this).data('name');
 				} else if ($(this).data('title')) { // Table
@@ -33,14 +29,12 @@ Global.prototype.cell = function(attributes) {
 					that.msg.text = $(this).data('text');
 				}
 				speechSynthesis.speak(that.msg);
-				console.log(that.msg.text);
 			}
-		}).on('mouseout', function(event) {
-			// console.log(event);
+		}).on('mouseout', function() {
 			$(this).css('background-color', 'blue');
 			// add interaction when search is not focused and unpaused
 			if (!$('#search input:focus').length && !log.paused) {
-				log.logInteraction(event.keyCode, 'hover', that.msg.text);
+				log.logInteraction($(this).data('keycode'), 'hover', that.msg.text);
 			}
 			// cancel speech
 			speechSynthesis.cancel();

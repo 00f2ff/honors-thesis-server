@@ -13,6 +13,7 @@ ProductTable.prototype.generateUI = function() {
 	$('.hover-row:not(:first-child)').empty();
 	// loop through data and add to DOM
 	var keys = Object.keys(this.productData);
+	var keyCodes = [81,87,69,82,84,89];
 	var element, attributes, cell;
 	for (var i = 0; i < keys.length; i++) {
 		if (keys[i] === 'title') {
@@ -23,7 +24,8 @@ ProductTable.prototype.generateUI = function() {
 		$('#table').append(element);
 		// add cell
 		attributes = {
-			'data-text': this.productData[keys[i]]
+			'data-text': this.productData[keys[i]],
+			'data-keycode': keyCodes[i]
 		}
 		var cell = global.cell(attributes);
 		$('.hover-row:nth-child(2)').append(cell);

@@ -37,6 +37,8 @@ Table.prototype.createProduct = function(title, price) {
 Table.prototype.generateUI = function() {
 	$('#table').empty();
 	$('.hover-row:not(:first-child)').empty();
+	// here because keycode data assignment not working in main.js
+	var keyCodes = [[81,87,69,82,84,89], [65,83,68,70,71,72], [90,88,67,86,66,78]]; // already formatted properly
 	for (var r = 0; r < this.products.length; r++) {
 		var row = $('<div class="row"></div>');
 		for (var c = 0; c < this.products[r].length; c++) {
@@ -44,7 +46,8 @@ Table.prototype.generateUI = function() {
 			var attributes = {
 				'data-title': this.products[r][c].title,
 				'data-price': '$'+this.products[r][c].price,
-				'data-listing_id': this.products[r][c].listing_id
+				'data-listing_id': this.products[r][c].listing_id,
+				'data-keyCode': keyCodes[c][r]
 			}
 			var cell = global.cell(attributes);
 			/* image is a placeholder at the moment; I'm not going to add a real image for bandwidth concerns */
