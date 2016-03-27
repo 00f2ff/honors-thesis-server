@@ -61,6 +61,9 @@ function Log() {
 		task_end_time: undefined,
 		interactions: []
 	}
+	this.pauseDelay = 0; // is subtracted from all times; increments on unpause
+	this.pauseTime = 0;
+	this.unpauseTime = 0;
 }
 
 function determineBrowser() {
@@ -92,8 +95,20 @@ Log.prototype.logServerData = function(data) {
 }
 
 Log.prototype.logInteraction = function(key, userEvent, text) {
+	// check for pause / unpause (esc)
+	if (key === 27) {
+		if (text === 'pause') {
+			this.pauseTime = Date.now();
+		} else {
+			this.unpauseTime = Date.now();
+			// increment pauseDelay
+			this.pauseDelay += (this.unpauseTime - this.pauseTime);
+		}
+	} else if (key === 39) { // check for task end (right arrow)
+		this.LOG.task_end_time = Date.now() - this.pauseDelay;
+	}
 	var interaction = {
-		time: Date.now(),
+		time: Date.now() - this.pauseDelay,
 		key: key,
 		userEvent: userEvent,
 		text: text

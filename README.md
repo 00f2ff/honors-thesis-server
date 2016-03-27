@@ -29,11 +29,14 @@ When I'm running non-Fingers version, collect all key data, (should rely on same
 
 Todo:
 
-* Add pause / resume task key + functionality to remove paused time. Since pause key would be pressed twice, I could remove time difference from each later interaction. If all key logs subtract a pauseTime variable, I could initialize that variable as 0, and then += pause time whenever it occurs
-* Add complete button to end the task. I don't want to hit the database every single time there's a new interaction (this could just be right arrow or something)
+Pause/unpause = escape
+Next task = right arrow
+
+* Add AJAX call to create (not update) new task entry on right arrow press
+* Test that data was saved to the database
+* NOT NOW --> On success, change window location to the next task? Maybe not, because although that would mean I wouldn't need to lean in and change the URL every time, it wouldn't give me time to read participants directions... Hold off for now
 * Create a sub-folder containing all Fingers scripts, and another that will contain all non-Fingers scripts
-* Add a URL thing that tells app it's running Fingers or non-Fingers, affecting which index page loads as well as 'fingers' param in document
+* Change the data I pass to ejs to render a different set of files (I can probably leave Log alone) depending on fingers vs non-fingers (I'll need to access this data higher on the page then, maybe under Log)
 * test mongo model with mLab
-* Add rest of metric code
 * Test metric code (run through tasks a few times as different people using different systems)
 

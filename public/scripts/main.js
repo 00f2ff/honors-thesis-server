@@ -9,6 +9,8 @@ var tableSecondColumnKeyCodes = [65,83,68,70,71,72];
 var tableThirdColumnKeyCodes = [90,88,67,86,66,78];
 var nextProductPageKeyCodes = [85,74,77];
 
+var paused = false;
+
 
 // Assigns click handler to cells (effect differs based on cell type)
 $('body').keydown(function(e) {
@@ -45,6 +47,13 @@ $('body').keydown(function(e) {
 		} else if (kc === 16) { // press shift to set focus to search bar
 			$('#search input').focus();
 			log.logInteraction(kc, 'press', 'focus search');
+		} else if (kc === 27) { // press escape to pause
+			var pauseMessage;
+			paused ? pauseMessage = "unpause" : pauseMessage = "pause";
+			paused = !paused;
+			log.logInteraction(kc, 'press', pauseMessage);
+		} else if (kc === 39) { // press right arrow to end task
+			log.logInteraction(kc, 'press', 'end task');
 		} else {
 			// log any other key presses as well
 			log.logInteraction(kc, 'press', 'unmapped');
@@ -61,6 +70,13 @@ $('body').keydown(function(e) {
 		} else if (kc === 16) { // press shift again to unfocus search
 			$('#search input').blur();
 			log.logInteraction(kc, 'press', 'unfocus search');
+		} else if (kc === 27) { // press escape to pause
+			var pauseMessage;
+			paused ? pauseMessage = "unpause" : pauseMessage = "pause";
+			paused = !paused;
+			log.logInteraction(kc, 'press', pauseMessage);
+		} else if (kc === 39) { // press right arrow to end task
+			log.logInteraction(kc, 'press', 'end task');
 		}
 	}
 	
