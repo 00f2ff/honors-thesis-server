@@ -30,8 +30,10 @@ When I'm running non-Fingers version, collect all key data, (should rely on same
 Todo:
 
 Pause/unpause = escape
+ - Note: The code will not collect data during pause
 Next task = right arrow
 
+* Add a conditional that stops data collection (except for unpause) after pause is pressed
 * Add AJAX call to create (not update) new task entry on right arrow press
 * Test that data was saved to the database
 * NOT NOW --> On success, change window location to the next task? Maybe not, because although that would mean I wouldn't need to lean in and change the URL every time, it wouldn't give me time to read participants directions... Hold off for now

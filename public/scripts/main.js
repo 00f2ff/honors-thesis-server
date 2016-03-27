@@ -9,8 +9,6 @@ var tableSecondColumnKeyCodes = [65,83,68,70,71,72];
 var tableThirdColumnKeyCodes = [90,88,67,86,66,78];
 var nextProductPageKeyCodes = [85,74,77];
 
-var paused = false;
-
 
 // Assigns click handler to cells (effect differs based on cell type)
 $('body').keydown(function(e) {
@@ -21,64 +19,69 @@ $('body').keydown(function(e) {
 	var isNotProductTable = $('.hover-row:nth-child(3)').children().length;
 	var isSearch = $('#search input:focus').length;
 	console.log(isNotProductTable);
-	// all key functionality doesn't hold for typing in search box
-	if (!isSearch) {
-		if (linkListKeyCodes.indexOf(kc) > -1) {
-			activateCategoryCell(kc);
-		} else if (tableFirstColumnKeyCodes.indexOf(kc) > -1 && isNotProductTable) {
-			activateTableCell(kc, 2);
-		} else if (tableSecondColumnKeyCodes.indexOf(kc) > -1 && isNotProductTable) {
-			activateTableCell(kc, 3);
-		} else if (tableThirdColumnKeyCodes.indexOf(kc) > -1 && isNotProductTable) {
-			activateTableCell(kc, 4);
-		} else if (nextProductPageKeyCodes.indexOf(kc) > -1 && isNotProductTable) {
-			activateNextPageCell(kc);
-		} else if (kc === 192) { // grave accent (back button)
-			// reset categories in base case (from first page) or going back to first page
-			if (etsy.requestHistory.length > 1) {
-				// last element of etsy.requestHistory is the current call, so pop it
-				etsy.requestHistory.pop();
-				// previous call from this page is now last element, so send new request with popped element
-				var previousRequest = etsy.requestHistory.pop();
-				// this request will add it back into history again; next back call will remove it
-				etsy.getRequest(previousRequest.purpose, previousRequest.uri, previousRequest.parameters);
+	// don't collect data on pause (except for upause)
+	if (!log.paused) {
+		// all key functionality doesn't hold for typing in search box
+		if (!isSearch) {
+			if (linkListKeyCodes.indexOf(kc) > -1) {
+				activateCategoryCell(kc);
+			} else if (tableFirstColumnKeyCodes.indexOf(kc) > -1 && isNotProductTable) {
+				activateTableCell(kc, 2);
+			} else if (tableSecondColumnKeyCodes.indexOf(kc) > -1 && isNotProductTable) {
+				activateTableCell(kc, 3);
+			} else if (tableThirdColumnKeyCodes.indexOf(kc) > -1 && isNotProductTable) {
+				activateTableCell(kc, 4);
+			} else if (nextProductPageKeyCodes.indexOf(kc) > -1 && isNotProductTable) {
+				activateNextPageCell(kc);
+			} else if (kc === 192) { // grave accent (back button)
+				// reset categories in base case (from first page) or going back to first page
+				if (etsy.requestHistory.length > 1) {
+					// last element of etsy.requestHistory is the current call, so pop it
+					etsy.requestHistory.pop();
+					// previous call from this page is now last element, so send new request with popped element
+					var previousRequest = etsy.requestHistory.pop();
+					// this request will add it back into history again; next back call will remove it
+					etsy.getRequest(previousRequest.purpose, previousRequest.uri, previousRequest.parameters);
+				}
+				log.logInteraction(kc, 'press', 'back');
+			} else if (kc === 16) { // press shift to set focus to search bar
+				$('#search input').focus();
+				log.logInteraction(kc, 'press', 'focus search');
+			} else if (kc === 27) { // press escape to pause
+				log.paused = !log.paused;
+				log.logInteraction(kc, 'press', 'pause');
+			} else if (kc === 39) { // press right arrow to end task
+				log.logInteraction(kc, 'press', 'end task');
+			} else {
+				// log any other key presses as well
+				log.logInteraction(kc, 'press', 'unmapped');
 			}
-			log.logInteraction(kc, 'press', 'back');
-		} else if (kc === 16) { // press shift to set focus to search bar
-			$('#search input').focus();
-			log.logInteraction(kc, 'press', 'focus search');
-		} else if (kc === 27) { // press escape to pause
-			var pauseMessage;
-			paused ? pauseMessage = "unpause" : pauseMessage = "pause";
-			paused = !paused;
-			log.logInteraction(kc, 'press', pauseMessage);
-		} else if (kc === 39) { // press right arrow to end task
-			log.logInteraction(kc, 'press', 'end task');
 		} else {
-			// log any other key presses as well
-			log.logInteraction(kc, 'press', 'unmapped');
+			if (kc === 13) { // enter to search
+				var searchString = $('#search input').val().replace(/\s+/g, '%20');
+				console.log(searchString);
+				$('#search input').val('');
+				etsy.getRequest('listings', 'listings/active', {'limit': 18, 'offset': 0, 'keywords': searchString});
+				// remove focus from input so user can use site again
+				$('#search input').blur();
+				log.logInteraction(kc, 'press', 'search');
+			} else if (kc === 16) { // press shift again to unfocus search
+				$('#search input').blur();
+				log.logInteraction(kc, 'press', 'unfocus search');
+			} else if (kc === 27) { // press escape to pause
+				log.paused = !log.paused;
+				log.logInteraction(kc, 'press', 'pause');
+			} else if (kc === 39) { // press right arrow to end task
+				log.logInteraction(kc, 'press', 'end task');
+			}
 		}
 	} else {
-		if (kc === 13) { // enter to search
-			var searchString = $('#search input').val().replace(/\s+/g, '%20');
-			console.log(searchString);
-			$('#search input').val('');
-			etsy.getRequest('listings', 'listings/active', {'limit': 18, 'offset': 0, 'keywords': searchString});
-			// remove focus from input so user can use site again
-			$('#search input').blur();
-			log.logInteraction(kc, 'press', 'search');
-		} else if (kc === 16) { // press shift again to unfocus search
-			$('#search input').blur();
-			log.logInteraction(kc, 'press', 'unfocus search');
-		} else if (kc === 27) { // press escape to pause
-			var pauseMessage;
-			paused ? pauseMessage = "unpause" : pauseMessage = "pause";
-			paused = !paused;
-			log.logInteraction(kc, 'press', pauseMessage);
-		} else if (kc === 39) { // press right arrow to end task
-			log.logInteraction(kc, 'press', 'end task');
+		if (kc === 27) { // press escape to unpause
+			log.paused = !log.paused;
+			log.logInteraction(kc, 'press', 'unpause');
 		}
 	}
+	
 	
 	// cancel speech because cell won't contain same content
 	speechSynthesis.cancel();

@@ -16,7 +16,9 @@ Global.prototype.cell = function(attributes) {
 	// assumes attributes come in prefixed with 'data-'
 	var that = this;
 	cell.attr(attributes)
-		.on('mouseover', function() {
+		.on('mouseover', function(event) {
+			console.log('mouseover');
+			console.log(event);
 			// only highlight and read cells when search is not focused
 			if (!$('#search input:focus').length) {
 				$(this).css('background-color', 'yellow');
@@ -34,9 +36,10 @@ Global.prototype.cell = function(attributes) {
 				console.log(that.msg.text);
 			}
 		}).on('mouseout', function(event) {
+			// console.log(event);
 			$(this).css('background-color', 'blue');
-			// add interaction when search is not focused
-			if (!$('#search input:focus').length) {
+			// add interaction when search is not focused and unpaused
+			if (!$('#search input:focus').length && !log.paused) {
 				log.logInteraction(event.keyCode, 'hover', that.msg.text);
 			}
 			// cancel speech
