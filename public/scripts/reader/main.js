@@ -15,6 +15,7 @@ $('body').keydown(function(e) {
 
 	// all key functionality doesn't hold for typing in search box
 	if (!isSearch) {
+		console.log($(document.activeElement).data());
 		if (kc === 192) { // grave accent (back button)
 			// reset categories in base case (from first page) or going back to first page
 			if (etsy.requestHistory.length > 1) {
@@ -28,7 +29,7 @@ $('body').keydown(function(e) {
 		} else if (isProduct && (kc === 32 || kc === 13)) { // is product and space or enter
 			etsy.getRequest('product', 'listings/'+$(document.activeElement).data('listing_id'), {});
 		} else if (isCategory && (kc === 32 || kc === 13)) { // is category and space or enter
-			etsy.getRequest('listings', 'listings/active', {'limit': 18, 'offset': 0, 'category': $(document.activeElement).data('name')});
+			etsy.getRequest('listings', 'listings/active', {'limit': 18, 'offset': 0, 'category': $(document.activeElement).text()});
 		} else if (isNext && (kc === 32 || kc === 13)) { // is next and space or enter
 			goToNextPage();
 		}
