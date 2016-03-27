@@ -18,10 +18,8 @@ exports.create = function(query, callback) {
   mongoDB.collection('logs').insert(
     query,
     {safe: true},
-    function(e, result) {
-      if (e) {
-        doError(e);
-      }
+    function(err, result) {
+      if (err) throw err;
       callback(result);
     });
 }

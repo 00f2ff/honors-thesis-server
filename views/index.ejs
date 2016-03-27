@@ -116,6 +116,23 @@ Log.prototype.logInteraction = function(key, userEvent, text) {
 	}
 	this.LOG.interactions.push(interaction);
 	console.log(this.LOG);
+	if (key === 39) { // post to database if task ended
+		$.ajax({
+			type: 'POST',
+			url: '/save',
+			data: JSON.stringify(this.LOG),
+			contentType: "application/json",
+			dataType:'json',
+			success: function(data) {
+				console.log(data);
+				console.log('yay');
+			},
+			error: function(err) {
+				console.log(err);
+				console.log('noooo');
+			}
+		})
+	}
 }
 
 
