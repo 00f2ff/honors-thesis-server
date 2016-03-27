@@ -33,13 +33,13 @@ function determineBrowser() {
 	if (isOpera)   return "Opera";
 }
 
-Log.prototype.addServerData = function(data) {
+Log.prototype.logServerData = function(data) {
 	this.LOG.participant_id = data.participant_id;
 	this.LOG.task_id = data.task_id;
 	this.LOG.fingers = data.fingers;
 }
 
-Log.prototype.addInteraction = function(key, userEvent, text) {
+Log.prototype.logInteraction = function(key, userEvent, text) {
 	var interaction = {
 		time: Date.now(),
 		key: key,
@@ -49,6 +49,7 @@ Log.prototype.addInteraction = function(key, userEvent, text) {
 	this.LOG.interactions.push(interaction);
 	console.log(this.LOG);
 }
+
 
 
 

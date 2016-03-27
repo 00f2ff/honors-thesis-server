@@ -37,7 +37,7 @@ Global.prototype.cell = function(attributes) {
 			$(this).css('background-color', 'blue');
 			// add interaction when search is not focused
 			if (!$('#search input:focus').length) {
-				log.addInteraction(event.keyCode, 'hover', that.msg.text);
+				log.logInteraction(event.keyCode, 'hover', that.msg.text);
 			}
 			// cancel speech
 			speechSynthesis.cancel();

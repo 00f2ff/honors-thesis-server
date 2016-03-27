@@ -30,7 +30,7 @@ $('body').keydown(function(e) {
 		} else if (tableThirdColumnKeyCodes.indexOf(kc) > -1 && isNotProductTable) {
 			activateTableCell(kc, 4);
 		} else if (nextProductPageKeyCodes.indexOf(kc) > -1 && isNotProductTable) {
-			activateNextPageCell();
+			activateNextPageCell(kc);
 		} else if (kc === 192) { // grave accent (back button)
 			// reset categories in base case (from first page) or going back to first page
 			if (etsy.requestHistory.length > 1) {
@@ -41,8 +41,13 @@ $('body').keydown(function(e) {
 				// this request will add it back into history again; next back call will remove it
 				etsy.getRequest(previousRequest.purpose, previousRequest.uri, previousRequest.parameters);
 			}
+			log.logInteraction(kc, 'press', 'back');
 		} else if (kc === 16) { // press shift to set focus to search bar
 			$('#search input').focus();
+			log.logInteraction(kc, 'press', 'focus search');
+		} else {
+			// log any other key presses as well
+			log.logInteraction(kc, 'press', 'unmapped');
 		}
 	} else {
 		if (kc === 13) { // enter to search
@@ -52,8 +57,10 @@ $('body').keydown(function(e) {
 			etsy.getRequest('listings', 'listings/active', {'limit': 18, 'offset': 0, 'keywords': searchString});
 			// remove focus from input so user can use site again
 			$('#search input').blur();
+			log.logInteraction(kc, 'press', 'search');
 		} else if (kc === 16) { // press shift again to unfocus search
 			$('#search input').blur();
+			log.logInteraction(kc, 'press', 'unfocus search');
 		}
 	}
 	
@@ -72,6 +79,9 @@ function activateTableCell(kc, nthChild) {
 	}
 	var cell = $('.hover-row:nth-child('+nthChild+') .cell:nth-child('+(1+ckc.indexOf(kc))+')');
 	console.log(cell);
+	// log interaction
+	var text = cell.data('title') + '  ' + cell.data('price');
+	log.logInteraction(kc, 'press', text);
 	etsy.getRequest('product', 'listings/'+cell.data('listing_id'), {});
 }
 
@@ -80,10 +90,12 @@ function activateTableCell(kc, nthChild) {
  */
 function activateCategoryCell(kc) {
 	var cell = $('.hover-row:first-child .cell:nth-child('+(1+linkListKeyCodes.indexOf(kc))+')');
+	var text = cell.data('name');
+	log.logInteraction(kc, 'press', text);
 	etsy.getRequest('listings', 'listings/active', {'limit': 18, 'offset': 0, 'category': cell.data('name')});
 }
 
-function activateNextPageCell() {
+function activateNextPageCell(kc) {
 	// send previous Etsy request with an updated offset
 	var lastRequest = etsy.requestHistory[etsy.requestHistory.length-1];
 	// create copy of last parameters
@@ -97,6 +109,7 @@ function activateNextPageCell() {
 			newParameters[oldKeys[i]] = lastRequest.parameters[oldKeys[i]];
 		}
 	}
+	log.logInteraction(kc, 'press', 'next page');
 	etsy.getRequest(lastRequest.purpose, lastRequest.uri, newParameters);
 }
 
