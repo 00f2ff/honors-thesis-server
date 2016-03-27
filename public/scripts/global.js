@@ -78,11 +78,12 @@ Global.prototype.cell = function(attributes) {
 				speechSynthesis.speak(that.msg);
 				console.log(that.msg.text);
 			}
-		}).on('mouseout', function() {
+		}).on('mouseout', function(event) {
 			$(this).css('background-color', 'blue');
 			// add interaction when search is not focused
-			// if (!$('#search input:focus').length) {
-				// that.addInteraction()
+			if (!$('#search input:focus').length) {
+				that.addInteraction(event.keyCode, 'hover', that.msg.text);
+			}
 			// cancel speech
 			speechSynthesis.cancel();
 		});

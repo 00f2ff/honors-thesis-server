@@ -15,7 +15,7 @@ Document structure:
 	interactions: [ # these occur on particular interactions, not page load (like previous)
 		{
 			time: Date,
-			key: string,
+			key: int, // will be a keycode; postprocess this later
 			userEvent: string,
 			text: string
 		},
