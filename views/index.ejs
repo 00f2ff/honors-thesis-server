@@ -48,6 +48,7 @@
 
 <!-- such javascript -->
 <script src="/scripts/jquery-1.11.3.min.js"></script>
+<scripts src="/scripts/logging.js"></scripts>
 <script src="/scripts/global.js"></script>
 <script src="/scripts/table.js"></script>
 <script src="/scripts/product_table.js"></script>
@@ -57,7 +58,7 @@
 <script src="/scripts/main.js"></script>
 <script>
 $(function() {
-	var global = new Global();
+	var global = new Global(); // helper; called multiple places
 	var cell = global.cell({'data-name': 'Back'});
 	cell.css({
 		'z-index': 10, 
@@ -70,10 +71,8 @@ $(function() {
 
 	// LOGGING
 
-	var ids = <%- data %>;
-	global.LOG.participant_id = data.participant_id;
-	global.LOG.task_id = data.task_id;
-	global.LOG.fingers = data.fingers;
+	var data = <%- data %>;
+	log.addServerData(data);
 
 })
 
