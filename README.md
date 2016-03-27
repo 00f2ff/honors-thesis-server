@@ -29,7 +29,6 @@ When I'm running non-Fingers version, collect all key data, (should rely on same
 
 Todo:
 
-* Add keylogging code (make sure keys aren't added on every hover event; make sure it wasn't the previous)
 * Add pause / resume task key + functionality to remove paused time. Since pause key would be pressed twice, I could remove time difference from each later interaction. If all key logs subtract a pauseTime variable, I could initialize that variable as 0, and then += pause time whenever it occurs
 * Add complete button to end the task. I don't want to hit the database every single time there's a new interaction (this could just be right arrow or something)
 * Create a sub-folder containing all Fingers scripts, and another that will contain all non-Fingers scripts

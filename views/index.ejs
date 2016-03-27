@@ -71,7 +71,8 @@ $(function() {
 
 	// LOGGING
 
-	var data = <%- data %>;
+	// console.log(log);
+	var data = <%- JSON.stringify(data) %>;
 	log.logServerData(data);
 
 })
