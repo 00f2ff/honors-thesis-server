@@ -9,7 +9,7 @@ exports.startTask = function(req, res) {
 		participant_id: req.params.participant_id,
 		task_id: req.params.task_id
 	}
-	res.render('index', {data: data});
+	res.render('index_'+req.params.appType, {data: data}); // requires 'fingers' or 'reader'
 }
 
 // called via ajax request

@@ -1,0 +1,121 @@
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+#search {
+	height: 50px;
+	width: 100%;
+	background-color: pink;
+}
+
+#title {
+	float: left;
+	font-size: 24px;
+}
+
+#search-bar {
+	float: right;
+	margin-right: 25px;
+}
+
+#search-icon {
+	/* placeholder */
+	height: 20px;
+	width: 20px;
+	background-color: blue;
+}
+
+#search-icon, form {
+	float: left;
+}
+
+#content-wrapper {
+	width: 100%;
+	margin: 25px auto;
+}
+
+#link_list {
+	float: left;
+	width: 7%; /* subject to change */
+	margin: 0% 1%;
+}
+
+#table {
+	float: left;
+	width: 81%;
+	/*margin-right: 5%;*/
+}
+
+.row {
+	margin-bottom: 25px;
+	height: 310px;
+}
+
+.product {
+	float: left;
+	margin-left: 25px;
+	height: 310px;
+	width: 310px;
+	background-color: pink;
+}
+
+
+#overlay {
+	position: absolute;
+}
+
+.hover-row {
+	/*float: left;*/
+	margin-bottom: calc(70px * 0.25); /* will have to rearrange based on actual keyboard layout */
+	margin-left: calc(70px * 1.25);
+	/*margin-left: calc(-70px * 0.25);*/
+	height: 70px;
+}
+
+.cell {
+	float: left;
+	margin-right: calc(70px * 0.25);
+	height: 70px;
+	width: 70px;
+	background-color: blue;
+	opacity: 0.05;
+	line-height: 70px;
+	text-align: center;
+}
+
+.invisible {
+	opacity: 0;
+}
+
+.first-row {
+	
+}
+
+
+.hover-row:nth-child(1) {
+	/*margin-left: calc(70px * 1.25);*/
+}
+.hover-row:nth-child(2) {
+	margin-left: calc(70px * 1.5);
+}
+.hover-row:nth-child(3) {
+	margin-left: calc(70px * 1.75);
+}
+.hover-row:nth-child(4) {
+	margin-left: calc(70px * 2);
+}
+
+#next-page {
+	margin: 2050px auto 50px auto;
+	height: 200px;
+	width: 200px;
+	line-height: 200px;
+	text-align: center;
+	background-color: orange;
+}
