@@ -34,6 +34,4 @@ Pause/unpause = escape
 Next task = right arrow
 
 * NOT NOW --> On success, change window location to the next task? Maybe not, because although that would mean I wouldn't need to lean in and change the URL every time, it wouldn't give me time to read participants directions... Hold off for now
-* Create a sub-folder containing all Fingers scripts, and another that will contain all non-Fingers scripts
-* Change the data I pass to ejs to render a different set of files (I can probably leave Log alone) depending on fingers vs non-fingers (I'll need to access this data higher on the page then, maybe under Log)
 

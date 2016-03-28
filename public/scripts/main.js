@@ -13,7 +13,7 @@ var nextProductPageKeyCodes   = [85,74,77];
 // Assigns click handler to cells (effect differs based on cell type)
 $('body').keydown(function(e) {
 	// find which hover-row had a cell pressed
-	var kc = e.keyCode;
+	var kc = e.which || e.keyCode;
 	// find out whether UI is showing Table or ProductTable (because no arrow control / activation on latter)
 	// AND is located on select conditionals (does not apply to LinkList)
 	var isNotProductTable = $('.hover-row:nth-child(3)').children().length;

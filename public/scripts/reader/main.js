@@ -5,7 +5,7 @@ etsy.getRequest('listings', 'listings/trending', {'limit': 18, 'offset': 0});
 // NOTE: pressing space also has default behavior of bringing down page, but that shouldn't matter
 
 $('body').keydown(function(e) {
-	var kc = e.keyCode;
+	var kc = e.which || e.keyCode;
 	
 	var isSearch = $('#search input:focus').length;
 	var isCategory = $('li:focus').length;
