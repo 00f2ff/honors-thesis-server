@@ -50,6 +50,8 @@
 <script src="/scripts/jquery-1.11.3.min.js"></script>
 <!-- <scripts src="/scripts/logging.js"></scripts> -->
 <script>
+var data = <%- JSON.stringify(data) %>;
+
 function Log() {
 	this.LOG = {
 		participant_id: undefined,
@@ -62,9 +64,9 @@ function Log() {
 		interactions: []
 	}
 	this.pauseDelay = 0; // is subtracted from all times; increments on unpause
-	this.pauseTime = 0;
+	this.pauseTime = Date.now();
 	this.unpauseTime = 0;
-	this.paused = false;
+	this.paused = true;
 }
 
 function determineBrowser() {
@@ -100,10 +102,14 @@ Log.prototype.logInteraction = function(key, userEvent, text) {
 	if (key === 27) {
 		if (text === 'pause') {
 			this.pauseTime = Date.now();
+			// console.log('paxuse time: '+this.pauseTime);
 		} else {
 			this.unpauseTime = Date.now();
-			// increment pauseDelay
+			// console.log('unpause time: '+this.unpauseTime);
+			// console.log('now: '+Date.now())
+;			// increment pauseDelay
 			this.pauseDelay += (this.unpauseTime - this.pauseTime);
+			// console.log('pause delay: '+this.pauseDelay);
 		}
 	} else if (key === 39) { // check for task end (right arrow)
 		this.LOG.task_end_time = Date.now() - this.pauseDelay;
@@ -123,9 +129,13 @@ Log.prototype.logInteraction = function(key, userEvent, text) {
 			data: JSON.stringify(this.LOG),
 			contentType: "application/json",
 			dataType:'json',
-			success: function(data) {
-				console.log(data);
+			success: function() {
 				console.log('yay');
+				// send to new url of next task (paused by default)
+				var setting;
+				console.log(data);
+				data.fingers ? setting = 'fingers' : setting = 'reader';
+				location.href = 'https://mighty-plateau-77499.herokuapp.com/'+setting+'/'+data.participant_id+'/'+(parseInt(data.task_id,10)+1);
 			},
 			error: function(err) {
 				console.log(err);
@@ -137,6 +147,7 @@ Log.prototype.logInteraction = function(key, userEvent, text) {
 
 
 var log = new Log();
+log.logServerData(data);
 console.log(log);
 
 </script>
@@ -159,13 +170,6 @@ $(function() {
 		'width': '70px' // on Asus laptop it's a physically smaller key
 	}).data('keyCode', 192);
 	$('#overlay').append(cell);
-
-	// LOGGING
-
-	// console.log(log);
-	var data = <%- JSON.stringify(data) %>;
-	log.logServerData(data);
-
 })
 
 

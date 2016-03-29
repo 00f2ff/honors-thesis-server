@@ -35,6 +35,8 @@
 <!-- such javascript -->
 <script src="/scripts/jquery-1.11.3.min.js"></script>
 <script>
+var data = <%- JSON.stringify(data) %>;
+
 function Log() {
 	this.LOG = {
 		participant_id: undefined,
@@ -47,9 +49,9 @@ function Log() {
 		interactions: []
 	}
 	this.pauseDelay = 0; // is subtracted from all times; increments on unpause
-	this.pauseTime = 0;
+	this.pauseTime = Date.now();
 	this.unpauseTime = 0;
-	this.paused = false;
+	this.paused = true;
 }
 
 function determineBrowser() {
@@ -108,9 +110,13 @@ Log.prototype.logInteraction = function(key, userEvent, text) {
 			data: JSON.stringify(this.LOG),
 			contentType: "application/json",
 			dataType:'json',
-			success: function(data) {
-				console.log(data);
+			success: function() {
 				console.log('yay');
+				// send to new url of next task (paused by default)
+				var setting;
+				console.log(data);
+				data.fingers ? setting = 'fingers' : setting = 'reader';
+				location.href = 'https://mighty-plateau-77499.herokuapp.com/'+setting+'/'+data.participant_id+'/'+(parseInt(data.task_id,10)+1);
 			},
 			error: function(err) {
 				console.log(err);
@@ -122,6 +128,7 @@ Log.prototype.logInteraction = function(key, userEvent, text) {
 
 
 var log = new Log();
+log.logServerData(data);
 console.log(log);
 
 </script>
@@ -131,10 +138,6 @@ console.log(log);
 <script src="/scripts/reader/etsy.js"></script>
 <script src="/scripts/reader/main.js"></script>
 <script>
-$(function() {
-	var data = <%- JSON.stringify(data) %>;
-	log.logServerData(data);
-})
 
 /* 
 To Do:
