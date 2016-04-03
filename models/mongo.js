@@ -13,9 +13,9 @@ mongodb.MongoClient.connect(uri, function(err, db) {
 });
 
 // Create
-exports.create = function(query, callback) {
+exports.create = function(query, collection, callback) {
   // insert a query into the specific collection
-  mongoDB.collection('logs').insert(
+  mongoDB.collection(collection).insert(
     query,
     {safe: true},
     function(err, result) {

@@ -1,6 +1,17 @@
 var table = new Table();
 var productTable = new ProductTable();
 
+/*
+ * No API version spoofs everything but search and view product
+ Todo:
+ 1. Build backend support for saving product information to database
+ 2. Save 36 (2*18, so 2 pages) listings + product info to each category and trending
+ 3. Reconfigure etsy classes and main js files to pull listing information from the database instead of calling it from API
+ 4. All product data I use is sent through listings, so just pull that particular info from database
+
+ */
+
+
 function Etsy() {
 	this.queryBase = 'https://openapi.etsy.com/v2/';
 	// Each time an etsy request is made, add {purpose: __, uri: __, parameters: __} to history for ability to go back
@@ -33,6 +44,7 @@ Etsy.prototype.getRequest = function(purpose, uri, parameters) {
 			if (data.ok) {
 				switch (purpose) {
 					case 'listings':
+						console.log(data);
 						table.populate(data.results);
 						// add next-page button if not already present
 						if (!$('#next-page').length) {
@@ -41,6 +53,7 @@ Etsy.prototype.getRequest = function(purpose, uri, parameters) {
 						break;
 					case 'product':
 						productTable.populate(data.results[0]); // comes in array
+						console.log(data);
 						// remove next-page button
 						$('#next-page').detach();
 						break;
