@@ -10,6 +10,8 @@ var tableSecondColumnKeyCodes = [65,83,68,70,71,72];
 var tableThirdColumnKeyCodes  = [90,88,67,86,66,78];
 var nextProductPageKeyCodes   = [85,74,77];
 
+var contextMessage = new SpeechSynthesisUtterance();
+
 
 // Assigns click handler to cells (effect differs based on cell type)
 $('body').keydown(function(e) {
@@ -37,6 +39,7 @@ $('body').keydown(function(e) {
 			} else if (kc === 192) { // grave accent (back button)
 				// reset categories in base case (from first page) or going back to first page
 				if (etsy.requestHistory.length > 1) {
+					// giveContext('back'); // hover executes it
 					// last element of etsy.requestHistory is the current call, so pop it
 					etsy.requestHistory.pop();
 					// previous call from this page is now last element, so send new request with popped element
@@ -47,9 +50,12 @@ $('body').keydown(function(e) {
 				log.logInteraction(kc, 'press', 'back');
 			} else if (kc === 16) { // press shift to set focus to search bar
 				$('#search input').focus();
+				// alert user of search
+				giveContext('search');
 				log.logInteraction(kc, 'press', 'focus search');
 			} else if (kc === 27) { // press escape to pause
 				log.paused = !log.paused;
+				giveContext('pause');
 				log.logInteraction(kc, 'press', 'pause');
 			} else if (kc === 39) { // press right arrow to end task
 				log.logInteraction(kc, 'press', 'end task');
@@ -64,29 +70,48 @@ $('body').keydown(function(e) {
 				$('#search input').val('');
 				// etsy.getRequest('listings', 'listings/active', {'limit': 18, 'offset': 0, 'keywords': searchString});
 				etsy.getRequest('search', 'listings/active', undefined, 0, searchString);
+				giveContext('search');
 				// remove focus from input so user can use site again
 				$('#search input').blur();
 				log.logInteraction(kc, 'press', 'search');
 			} else if (kc === 16) { // press shift again to unfocus search
 				$('#search input').blur();
+				// alert user of un-search
+				giveContext('page'); // this message may be unclear
 				log.logInteraction(kc, 'press', 'unfocus search');
 			} else if (kc === 27) { // press escape to pause
 				log.paused = !log.paused;
+				giveContext('pause');
 				log.logInteraction(kc, 'press', 'pause');
-			} 
+			} else {
+				// say current key when pressed
+				giveContext(kc);
+			}
 			// DON'T ALLOW END TASK ON SEARCH BAR (users might use arrow keys to fix typos)
 		}
 	} else {
 		if (kc === 27) { // press escape to unpause
 			log.paused = !log.paused;
+			giveContext('unpause');
 			log.logInteraction(kc, 'press', 'unpause');
 		}
 	}
 	
 	
 	// cancel speech because cell won't contain same content
-	speechSynthesis.cancel();
+	// speechSynthesis.cancel();
 });
+
+// note: fromCharCode doesn't handle everything, so I'm not using it to log data. It may still be helpful
+// for post-processing though
+function giveContext(action) {
+	if (typeof action == 'number') {
+		contextMessage.text = String.fromCharCode((96 <= action && action <= 105)? action-48 : action);
+	} else {
+		contextMessage.text = action;
+	}
+	speechSynthesis.speak(contextMessage);
+}
 
 function activateTableCell(kc, nthChild) {
 	var ckc;
@@ -119,6 +144,7 @@ function activateCategoryCell(kc) {
 
 function activateNextPageCell(kc) {
 	// send previous Etsy request with an updated offset
+	giveContext('next page');
 	var lastRequest = etsy.requestHistory[etsy.requestHistory.length-1];
 	log.logInteraction(kc, 'press', 'next page');
 	etsy.getRequest(lastRequest.type, lastRequest.uri, lastRequest.productIndex, lastRequest.offset+18, lastRequest.keywords);
