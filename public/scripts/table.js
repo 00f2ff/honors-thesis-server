@@ -5,7 +5,7 @@ function Table() {
 	
 }
 
-Table.prototype.populate = function(unformattedProducts) {
+Table.prototype.populate = function(offset, unformattedProducts) {
 	var products = [];
 	for (var i = 0; i < unformattedProducts.length; i++) {
 		if (i % 3 === 0) {
@@ -17,6 +17,7 @@ Table.prototype.populate = function(unformattedProducts) {
 	// cell queues
 	this.inactiveQueue = [ [], [], [] ];
 	this.previouslyActiveQueue = [ [], [], [] ];
+	this.offset = offset;
 	this.generateUI();
 }
 
@@ -37,6 +38,7 @@ Table.prototype.createProduct = function(title, price) {
 Table.prototype.generateUI = function() {
 	$('#table').empty();
 	$('.hover-row:not(:first-child)').empty();
+	var product_index = this.offset;
 	// here because keycode data assignment not working in main.js
 	var keyCodes = [[81,87,69,82,84,89], [65,83,68,70,71,72], [90,88,67,86,66,78]]; // already formatted properly
 	for (var r = 0; r < this.products.length; r++) {
@@ -47,7 +49,8 @@ Table.prototype.generateUI = function() {
 				'data-title': this.products[r][c].title,
 				'data-price': '$'+this.products[r][c].price,
 				'data-listing_id': this.products[r][c].listing_id,
-				'data-keyCode': keyCodes[c][r]
+				'data-keyCode': keyCodes[c][r],
+				'data-product_index': product_index
 			}
 			var cell = global.cell(attributes);
 			/* image is a placeholder at the moment; I'm not going to add a real image for bandwidth concerns */
@@ -65,7 +68,8 @@ Table.prototype.generateUI = function() {
 				row.append(product);
 				// $($('.hover-row')[c+1]).append(cell);
 				$('.hover-row:nth-child('+(2+c)+')').append(cell); // 2+c because :nth-child(1) refers to first child
-			}	
+			}
+			product_index++;	
 		}
 		// check whether row had cells appended or if cells moved into inactiveQueue
 		if (row.children().length > 0) {

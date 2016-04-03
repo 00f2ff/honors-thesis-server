@@ -4,53 +4,67 @@ var productTable = new ProductTable();
 
 function Etsy() {
 	this.queryBase = 'https://openapi.etsy.com/v2/';
-	// Each time an etsy request is made, add {purpose: __, uri: __, parameters: __} to history for ability to go back
+	this.currentListings;
 	this.requestHistory = [];
+	/*
+	 * History data structure:
+	 {
+	 	type: , # if 'search', use proper next page protocol; otherwise, call DB again but modify what's returned
+		url: , # main.js should generate proper uri for search
+		productIndex: undefined, # will be a number if it's a product
+		offset: 0 # will be 18 if next page
+	 }
+ 	*/
 }
 
-Etsy.prototype.getRequest = function(purpose, uri, parameters) {
-	// don't push category request to history
-	if (purpose !== 'categories') {
-		this.requestHistory.push({
-			purpose: purpose,
-			uri: uri,
-			parameters: parameters
-		});
+Etsy.prototype.getRequest = function(type, uri, productIndex, offset, keywords) {
+
+	if (type === 'search') {
+		var query = this.queryBase + uri + '.js?limit=36&offset=' + offset + '&keywords=' + keywords + '&api_key=' + api_key;
+		var dataType = 'jsonp';
+	} else {
+		var query = '/listings/' + type;
+		var dataType = 'json';
 	}
-	console.log(this.requestHistory)
-	// format parameters as ampersand-separated string
-	var params = '';
-	for (var key in parameters) {
-		if (parameters.hasOwnProperty(key)) {
-			params = params + key + '=' + parameters[key] + '&';
-		}
-	}
-	var query = this.queryBase + uri + '.js?' + params + 'api_key=' + api_key;
-	$.ajax({
-		url: query,
-		type: 'GET',
-		dataType: 'jsonp',
-		success: function(data) {
-			if (data.ok) {
-				switch (purpose) {
-					case 'listings':
-						table.populate(data.results);
-						break;
-					case 'product':
-						productTable.populate(data.results[0]); // comes in array
-						break;
-					default:
-						console.log('Not a valid purpose');
-				}
-				
-			} else {
-				console.log(data.error);
-			}
-		},
-		error: function(err) {
-			console.log(err);
-		}
+
+	this.requestHistory.push({
+		type: type,
+		uri: uri,
+		productIndex: productIndex,
+		offset: offset,
+		keywords: keywords
 	});
+
+	console.log(this.requestHistory);
+	var that = this;
+	if (productIndex == undefined) { // not a product page
+		console.log('hey there')
+		$.ajax({
+			url: query,
+			type: 'GET',
+			dataType: dataType,
+			success: function(data) {
+				if (type == 'search') {
+					that.currentListings = data.results;
+				} else {
+					console.log(data);
+					that.currentListings = data[0].results;
+					console.log(that.currentListings);
+				}
+				// need to pass offset so data-product_index gets updated
+				table.populate(offset, that.currentListings.slice(offset, offset+18)); // only show 18 products, despite 36 being available
+			},
+			error: function(err) {
+				console.log(err);
+			}
+		});
+	} else { // product page
+		productTable.populate(that.currentListings[productIndex]);
+		console.log(data);
+	}
+
 }
+
+
 
 

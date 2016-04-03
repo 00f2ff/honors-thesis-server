@@ -1,3 +1,5 @@
+/* This file is deprecated; actual code that gets run is in each index file */
+
 function Log() {
 	this.LOG = {
 		participant_id: undefined,

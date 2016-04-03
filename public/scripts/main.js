@@ -1,6 +1,7 @@
 
 var etsy = new Etsy();
-etsy.getRequest('listings', 'listings/trending', {'limit': 18, 'offset': 0});
+// etsy.getRequest('listings', 'listings/trending', {'limit': 18, 'offset': 0});
+etsy.getRequest('trending', undefined, undefined, 0, undefined);
 
 // Keycode arrays. Index of key corresponds with index of cell in hover-row
 var linkListKeyCodes          = [49,50,51,52,53,54];
@@ -39,9 +40,9 @@ $('body').keydown(function(e) {
 					// last element of etsy.requestHistory is the current call, so pop it
 					etsy.requestHistory.pop();
 					// previous call from this page is now last element, so send new request with popped element
-					var previousRequest = etsy.requestHistory.pop();
+					var pr = etsy.requestHistory.pop();
 					// this request will add it back into history again; next back call will remove it
-					etsy.getRequest(previousRequest.purpose, previousRequest.uri, previousRequest.parameters);
+					etsy.getRequest(pr.type, pr.uri, pr.productIndex, pr.offset, pr.keywords);
 				}
 				log.logInteraction(kc, 'press', 'back');
 			} else if (kc === 16) { // press shift to set focus to search bar
@@ -61,7 +62,8 @@ $('body').keydown(function(e) {
 				var searchString = $('#search input').val().replace(/\s+/g, '%20');
 				console.log(searchString);
 				$('#search input').val('');
-				etsy.getRequest('listings', 'listings/active', {'limit': 18, 'offset': 0, 'keywords': searchString});
+				// etsy.getRequest('listings', 'listings/active', {'limit': 18, 'offset': 0, 'keywords': searchString});
+				etsy.getRequest('search', 'listings/active', undefined, 0, searchString);
 				// remove focus from input so user can use site again
 				$('#search input').blur();
 				log.logInteraction(kc, 'press', 'search');
@@ -100,7 +102,8 @@ function activateTableCell(kc, nthChild) {
 	// log interaction
 	var text = cell.data('title') + '  ' + cell.data('price');
 	log.logInteraction(kc, 'press', text);
-	etsy.getRequest('product', 'listings/'+cell.data('listing_id'), {});
+	etsy.getRequest(undefined, undefined, cell.data('product_index'), undefined, undefined);
+	// etsy.getRequest('product', 'listings/'+cell.data('listing_id'), {});
 }
 
 /*
@@ -110,25 +113,16 @@ function activateCategoryCell(kc) {
 	var cell = $('.hover-row:first-child .cell:nth-child('+(1+linkListKeyCodes.indexOf(kc))+')');
 	var text = cell.data('name');
 	log.logInteraction(kc, 'press', text);
-	etsy.getRequest('listings', 'listings/active', {'limit': 18, 'offset': 0, 'category': cell.data('name')});
+	etsy.getRequest(cell.data('name'), undefined, undefined, 0, undefined);
+	// etsy.getRequest('listings', 'listings/active', {'limit': 18, 'offset': 0, 'category': cell.data('name')});
 }
 
 function activateNextPageCell(kc) {
 	// send previous Etsy request with an updated offset
 	var lastRequest = etsy.requestHistory[etsy.requestHistory.length-1];
-	// create copy of last parameters
-	var newParameters = {}
-	var oldKeys = Object.keys(lastRequest.parameters);
-	for (var i = 0; i < oldKeys.length; i++) {
-		newParameters[oldKeys[i]] = lastRequest.parameters[oldKeys[i]];
-		if (oldKeys[i] === 'offset') {
-			newParameters[oldKeys[i]] = lastRequest.parameters[oldKeys[i]] + 18;
-		} else {
-			newParameters[oldKeys[i]] = lastRequest.parameters[oldKeys[i]];
-		}
-	}
 	log.logInteraction(kc, 'press', 'next page');
-	etsy.getRequest(lastRequest.purpose, lastRequest.uri, newParameters);
+	etsy.getRequest(lastRequest.type, lastRequest.uri, lastRequest.productIndex, lastRequest.offset+18, lastRequest.keywords);
+	// etsy.getRequest(lastRequest.purpose, lastRequest.uri, newParameters);
 }
 
 
