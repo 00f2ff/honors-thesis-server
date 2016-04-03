@@ -23,3 +23,12 @@ exports.create = function(query, collection, callback) {
       callback(result);
     });
 }
+
+// Find
+exports.find = function(collection, query, callback) {
+  var crsr = mongoDB.collection(collection).find(query);
+  crsr.toArray(function(err, result) {
+    if (err) throw err;
+    callback(result);
+  });
+}

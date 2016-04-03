@@ -11,7 +11,6 @@ $('body').keydown(function(e) {
 	var isCategory = $('li:focus').length;
 	var isProduct = $('.product:focus').length;
 	var isNext = $('#next-page:focus').length;
-	console.log(isNext);
 
 	var logText = ''; // default: any key
 	// don't collect data on pause (except for upause)
@@ -26,17 +25,17 @@ $('body').keydown(function(e) {
 					// last element of etsy.requestHistory is the current call, so pop it
 					etsy.requestHistory.pop();
 					// previous call from this page is now last element, so send new request with popped element
-					var previousRequest = etsy.requestHistory.pop();
+					var pr = etsy.requestHistory.pop();
 					// this request will add it back into history again; next back call will remove it
-					etsy.getRequest(previousRequest.purpose, previousRequest.uri, previousRequest.parameters);
+					etsy.getRequest(pr.type, pr.uri, pr.productIndex, pr.offset, pr.keywords);
 				}
 				logText = 'back';
 			} else if (isProduct && (kc === 32 || kc === 13)) { // is product and space or enter
 				logText = $(document.activeElement).find('.product-name').text() + ' ' + $(document.activeElement).find('.product-price').text();
-				etsy.getRequest('product', 'listings/'+$(document.activeElement).data('listing_id'), {});
+				etsy.getRequest(undefined, undefined, $(document.activeElement).data('product_index'), undefined, undefined);
 			} else if (isCategory && (kc === 32 || kc === 13)) { // is category and space or enter
 				logText = $(document.activeElement).text();
-				etsy.getRequest('listings', 'listings/active', {'limit': 18, 'offset': 0, 'category': $(document.activeElement).text()});
+				etsy.getRequest($(document.activeElement).text(), undefined, undefined, 0, undefined);
 			} else if (isNext && (kc === 32 || kc === 13)) { // is next and space or enter
 				logText = 'next page';
 				goToNextPage();
@@ -53,7 +52,7 @@ $('body').keydown(function(e) {
 				logText = 'search';
 				console.log(searchString);
 				$('#search input').val('');
-				etsy.getRequest('listings', 'listings/active', {'limit': 18, 'offset': 0, 'keywords': searchString});
+				etsy.getRequest('search', 'listings/active', undefined, 0, searchString);
 				// remove focus from input so user can use site again
 				$('#search input').blur();
 				log.logInteraction(kc, 'press', logText);
@@ -77,18 +76,7 @@ $('body').keydown(function(e) {
 function goToNextPage() {
 	// send previous Etsy request with an updated offset
 	var lastRequest = etsy.requestHistory[etsy.requestHistory.length-1];
-	// create copy of last parameters
-	var newParameters = {}
-	var oldKeys = Object.keys(lastRequest.parameters);
-	for (var i = 0; i < oldKeys.length; i++) {
-		newParameters[oldKeys[i]] = lastRequest.parameters[oldKeys[i]];
-		if (oldKeys[i] === 'offset') {
-			newParameters[oldKeys[i]] = lastRequest.parameters[oldKeys[i]] + 18;
-		} else {
-			newParameters[oldKeys[i]] = lastRequest.parameters[oldKeys[i]];
-		}
-	}
-	etsy.getRequest(lastRequest.purpose, lastRequest.uri, newParameters);
+	etsy.getRequest(lastRequest.type, lastRequest.uri, lastRequest.productIndex, lastRequest.offset+18, lastRequest.keywords);
 }
 
 // adds a next page click handler (not present on others; require enter to go to (act as links))
