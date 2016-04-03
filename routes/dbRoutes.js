@@ -20,14 +20,14 @@ exports.saveTask = function(req, res) {
 	});
 }
 
-exports.saveListings = function(req, res) {
+exports.saveListing = function(req, res) {
 	console.log(req.body);
 	mongo.create(req.body, 'listings', function(doc) {
 		res.send(JSON.stringify(doc));
 	});
 }
 
-exports.getListings = function(req, res) {
+exports.getListing = function(req, res) {
 	mongo.find('listings', {'category': req.params.category}, function(doc) {
 		res.send(JSON.stringify(doc));
 	});

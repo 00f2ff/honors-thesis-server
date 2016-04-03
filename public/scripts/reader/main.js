@@ -1,6 +1,7 @@
 
 var etsy = new Etsy();
-etsy.getRequest('listings', 'listings/trending', {'limit': 18, 'offset': 0});
+// etsy.getRequest('listings', 'listings/trending', {'limit': 18, 'offset': 0});
+etsy.getRequest('trending', undefined, undefined, 0, undefined);
 
 // NOTE: pressing space also has default behavior of bringing down page, but that shouldn't matter
 

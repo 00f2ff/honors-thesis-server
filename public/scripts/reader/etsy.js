@@ -37,8 +37,10 @@ Etsy.prototype.getRequest = function(type, uri, productIndex, offset, keywords) 
 
 	if (type === 'search') {
 		var query = this.queryBase + uri + '.js?limit=36&offset=' + offset + '&keywords=' + keywords + '&api_key=' + api_key;
+		var dataType = 'jsonp';
 	} else {
 		var query = '/listings/' + type;
+		var dataType = 'json';
 	}
 
 	this.requestHistory.push({
@@ -52,21 +54,24 @@ Etsy.prototype.getRequest = function(type, uri, productIndex, offset, keywords) 
 	console.log(this.requestHistory);
 	var that = this;
 	if (productIndex == undefined) { // not a product page
+		console.log('hey there')
 		$.ajax({
 			url: query,
 			type: 'GET',
-			dataType: 'jsonp',
+			dataType: dataType,
 			success: function(data) {
-				if (data.ok) {
+				if (type == 'search') {
 					that.currentListings = data.results;
-					// need to pass offset so data-productIndex gets updated
-					table.populate(offset, that.currentListings.slice(offset+1, offset+19)); // only show 18 products, despite 36 being available
-					// add next-page button if not already present
-					if (!$('#next-page').length) {
-						$('body').append('<div id="next-page" tabindex="0" role="button">Next Page</div>')
-					}
 				} else {
-					console.log(data.error);
+					console.log(data);
+					that.currentListings = data[0].results;
+					console.log(that.currentListings);
+				}
+				// need to pass offset so data-product_index gets updated
+				table.populate(offset, that.currentListings.slice(offset, offset+18)); // only show 18 products, despite 36 being available
+				// add next-page button if not already present
+				if (!$('#next-page').length) {
+					$('body').append('<div id="next-page" tabindex="0" role="button">Next Page</div>')
 				}
 			},
 			error: function(err) {

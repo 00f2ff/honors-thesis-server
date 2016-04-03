@@ -29,7 +29,7 @@ ProductTable.prototype.populate = function(data) {
 	var productData = {}
 	// null checking
 	if (data.title && data.title.length > 0) productData.title = data.title;
-	if (data.description && data.description.length > 0) productData.description = 'Description: ' + data.description;
+	// if (data.description && data.description.length > 0) productData.description = 'Description: ' + data.description;
 	if (data.price && data.price.length > 0) productData.price = 'Price: $' + data.price;
 	if (data.category_path && data.category_path.length > 0) productData.category = 'Category: ' + data.category_path.join(', ');
 	if (data.materials && data.materials.length > 0) productData.material = 'Material: ' + data.materials.join(', ');

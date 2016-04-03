@@ -19,7 +19,7 @@ app.set('view engine', 'ejs');
 // appType will be "fingers" or "read"
 app.get('/:appType/:participant_id/:task_id', dbRoutes.startTask);
 app.post('/save', dbRoutes.saveTask);
-app.post('/saveListings', dbRoutes.saveListings); // I don't feel like refactoring
+app.post('/saveListings', dbRoutes.saveListing); // I don't feel like refactoring
 app.get('/listings/:category', dbRoutes.getListing);
 
 app.listen(app.get('port'), function() {
